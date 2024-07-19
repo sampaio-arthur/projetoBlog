@@ -101,4 +101,6 @@ class ArticlesController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+    
 }
+

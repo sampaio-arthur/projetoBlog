@@ -38,7 +38,7 @@ class CategoriesTable extends Table
     {
         $validator
             ->integer('parent_id')
-            ->notEmptyString('parent_id');
+            ->allowEmptyString('parent_id'); // Permite que o campo seja vazio
 
         $validator
             ->scalar('name')

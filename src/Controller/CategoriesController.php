@@ -20,10 +20,12 @@ class CategoriesController extends AppController
     {
         $this->paginate = [
             'contain' => ['ParentCategories'],
+            'order' => ['Categories.lft' => 'ASC'] // Especificando a tabela para a coluna 'lft'
         ];
-        $categories = $this->paginate($this->Categories);
+        $categories = $this->paginate($this->Categories->find());
 
         $this->set(compact('categories'));
+        $this->set('_serialize', ['categories']);
     }
 
     /**
@@ -106,5 +108,45 @@ class CategoriesController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Move Up method
+     *
+     * @param string|null $id Category id.
+     * @return \Cake\Http\Response|null|void Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function moveUp($id = null)
+    {
+        $this->request->allowMethod(['post', 'put']);
+        $category = $this->Categories->get($id);
+        if ($this->Categories->moveUp($category)) {
+            $this->Flash->success('The category has been moved up.');
+        } else {
+            $this->Flash->error('The category could not be moved up. Please, try again.');
+        }
+
+        return $this->redirect($this->referer(['action' => 'index']));
+    }
+
+    /**
+     * Move Down method
+     *
+     * @param string|null $id Category id.
+     * @return \Cake\Http\Response|null|void Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function moveDown($id = null)
+    {
+        $this->request->allowMethod(['post', 'put']);
+        $category = $this->Categories->get($id);
+        if ($this->Categories->moveDown($category)) {
+            $this->Flash->success('The category has been moved down.');
+        } else {
+            $this->Flash->error('The category could not be moved down. Please, try again.');
+        }
+
+        return $this->redirect($this->referer(['action' => 'index']));
     }
 }
